@@ -1,7 +1,13 @@
 ####Setup
 * [Installing RVM](http://ruby.about.com/od/rubyversionmanager/ss/installrvmlinux.htm) (This did not work)
 
-####String functions 
+####Strings 
+###### String interpolation
+
+```
+"#{some_variable}"
+```
+
 ###### .capitalize
 print "This is my question?"
 answer = gets.chomp
@@ -27,6 +33,8 @@ redact = gets.chomp
 
 words = text.split(" ") # space delimeter
 ```
+
+
 
 ####Type casting
 ###### Integer()
@@ -58,11 +66,78 @@ else
 end
 ```
 
+######One line if 
+General syntax
+
+```
+expression if boolean
+```
+
+example 
+
+```
+puts "nice" if true
+```
+
+#######One-Line Unless
+General syntax
+
+```
+expression unless boolean
+```
+
+example 
+
+```
+puts "nice" unless false
+```
+######ternary conditional expression.
+General syntax
+
+```
+boolean ? Do this if true: Do this if false
+```
+
+example 
+```
+puts 3 < 4 ? "3 is less than 4!" : "3 is not less than 4."
+```
+
+######case statements
+
+```
+case language
+  when "JS" then puts "Websites!"
+  when "Python" then puts "Science!"
+  when "Ruby" then puts "Web apps!"
+  else puts "I don't know!"
+end
+```
+
+
+
 ####Operators 
 ==, !=, >, <, >=, <=, &&, ||, !
 
 <=> combined comparison operator - compares two Ruby objects. It returns 0 if the first operand (item to be compared) equals the second, 1 if first operand is greater than the second, and -1 if the first operand is less than the second.
 
+<< shovel operator used to push things at the end of an array. it also works with strings
+
+
+||= conditional assignment operator - works only if its previous value was falsy otherwise it does not do the assignment
+```
+avorite_book = nil
+puts favorite_book
+
+favorite_book ||= "Cat's Cradle"
+puts favorite_book
+
+favorite_book ||= "Why's (Poignant) Guide to Ruby"
+puts favorite_book
+
+favorite_book = "Why's (Poignant) Guide to Ruby"
+puts favorite_book
+```
 
 #### Loops
 ######until loop
@@ -132,6 +207,12 @@ while i < 50 do
     print i
 end 
 ```
+
+###### ```.upto``` and ```.downto```
+
+```
+"L".upto("P") { |let| puts let}
+``` 
 
 
 ####Array 
@@ -214,6 +295,123 @@ frequencies.reverse!
 
 ######nil value
 You get a nil value if you try accessing an index that does not exist in an array
+Note: nil and false are the only non true values in ruby all other values are truthy. False and nill are not the same thing. False means "not true" and nil means "nothing at all". If you set a default value with hash constructor then you get that default value if you try accessing a non existent key in the hash
+
+######Hash symbols 
+A symbol is sort of a non string name of the key in a hash. The only difference of the using symbols as keys as opposed to strings is that the value for a symbol is unique as well i.e you can only have one copy of any given symbol
+
+```
+puts "string".object_id
+puts "string".object_id
+
+puts :symbol.object_id
+puts :symbol.object_id
+```
+
+The .object_id method gets the ID of an object—it's how Ruby knows whether two objects are the exact same object. If you run the code you will see that the two "strings" are actually different objects, whereas the :symbol is the same object listed twice. Symbols always start with a colon (:). They must be valid Ruby variable names, so the first character after the colon has to be a letter or underscore (_); after that, any combination of letters, numbers, and underscores is allowed.
+
+Note: You can assign a variable a symbol like belo
+
+```
+# Write your code below!
+my_first_symbol = :name 
+```
+
+Symbols pop up in a lot of places in Ruby, but they're primarily used either as hash keys or for referencing method names. Symbols make good hash keys for a few reasons:
+
+* They're immutable, meaning they can't be changed once they're created;
+* Only one copy of any symbol exists at a given time, so they save memory;
+* Symbol-as-keys are faster than strings-as-keys because of the above two reasons. The code below proves it 
+
+```
+require 'benchmark'
+
+string_AZ = Hash[("a".."z").to_a.zip((1..26).to_a)]
+symbol_AZ = Hash[(:a..:z).to_a.zip((1..26).to_a)]
+
+string_time = Benchmark.realtime do
+  100_000.times { string_AZ["r"] }
+end
+
+symbol_time = Benchmark.realtime do
+  100_000.times { symbol_AZ[:r] }
+end
+
+puts "String time: #{string_time} seconds."
+puts "Symbol time: #{symbol_time} seconds."
+```
+
+```.to_a``` means convert to array. ```.zip``` method will combine the elements of two arrays.
+
+Converting between strings and symbols is a snap. Just use ```.to_s``` and ```.to_sym```. You can use ```.intern``` instead of ```.to_sym```
+
+
+```
+strings = ["HTML", "CSS", "JavaScript", "Python", "Ruby"]
+
+# Add your code below!
+symbols = []
+
+strings.each do |str|
+    symbols.push(str.to_sym)
+end
+```
+
+######Change of the Hash rocket syntax to just a colon in ruby 9.1
+The two changes are:
+
+* You put the colon at the end of the symbol, not at the beginning;
+* You don't need the hash rocket anymore.
+
+Note: It's important to note that even though these keys have colons at the end instead of the beginning, they're still symbols!
+
+
+######.select for selection
+You can select something in a hash by specifying a select critaria
+
+```
+movie_ratings = {
+  memento: 3,
+  primer: 3.5,
+  the_matrix: 5,
+  truman_show: 4,
+  red_dawn: 1.5,
+  skyfall: 4,
+  alex_cross: 2,
+  uhf: 1,
+  lion_king: 3.5
+}
+# Add your code below!
+
+good_movies = movie_ratings.select do |movie, rating|
+    rating > 3
+end
+```
+
+###### ```.each_key``` and ```.each_value```
+
+```
+movie_ratings = {
+  memento: 3,
+  primer: 3.5,
+  the_matrix: 3,
+  truman_show: 4,
+  red_dawn: 1.5,
+  skyfall: 4,
+  alex_cross: 2,
+  uhf: 1,
+  lion_king: 3.5
+}
+# Add your code below!
+
+movie_ratings.each_key {|k| puts k}
+```
+
+###### deleting items from a hash with ```.delete```
+
+```
+movies.delete(title.to_sym)
+```
 
 
 ####Functions 
@@ -249,5 +447,175 @@ end
 
 1.times { puts "As am I!" }
 ```
+
+###### ```.collect``` used as a block
+The collect method takes a block and applies the expression in the block to every element in an array. Check it out:
+
+```
+my_nums = [1, 2, 3]
+my_nums.collect { |num| num ** 2 }
+# ==> [1, 4, 9]
+```
+
+If we look at the value of my_nums, though, we'll see it hasn't changed:
+
+```
+my_nums
+# ==> [1, 2, 3]
+```
+
+This is because .collect returns a copy of my_nums, but doesn't change (or mutate) the original my_nums array
+If we want to do that, we can use .collect! with an exclamation point:
+
+```
+my_nums.collect! { |num| num ** 2 }
+# ==> [1, 4, 9]
+my_nums
+# ==> [1, 4, 9]
+```
+
+###### ```yield``
+Why do some methods accept a block and others don't? It's because methods that accept blocks have a way of transferring control from the calling method to the block and back again. We can build this into the methods we define by using the yield keyword.
+Check this out
+
+```
+def block_test
+  puts "We're in the method!"
+  puts "Yielding to the block..."
+  yield
+  puts "We're back in the method!"
+end
+
+block_test { puts ">>> We're in the block!" }
+```
+
+EXERCISE
+Define your own method, double, that accepts a single parameter and yields to a block. Then call it with a block that multiplies the number parameter by 2. You can double any number you like!
+
+
+###### procs for blocks
+You can think of a proc as a "saved" block: just like you can give a bit of code a name and turn it into a method, you can name a block and turn it into a proc. Procs are great for keeping your code DRY, which stands for Don't Repeat Yourself. With blocks, you have to write your code out each time you need it; with a proc, you write your code once and can use it many times!
+
+Example 1
+```
+multiples_of_3 = Proc.new do |n|
+  n % 3 == 0
+end
+
+(1..100).to_a.select(&multiples_of_3)
+```
+
+Example 2
+
+```
+cube = Proc.new { |x| x ** 3 }
+[1, 2, 3].collect!(&cube)
+# ==> [1, 8, 27]
+[4, 5, 6].map!(&cube)
+# ==> [64, 125, 216]
+```
+
+(The .collect! and .map! methods do the exact same thing.)
+The & is used to convert the cube proc into a block (since .collect! and .map! normally take a block). We'll do this any time we pass a proc to a method that expects a block.
+Why bother saving our blocks as procs? There are two main advantages:
+* Procs are full-fledged objects, so they have all the powers and abilities of objects.
+* Unlike blocks, procs can be called over and over without rewriting them. This prevents you from having to retype the contents of your block every time you need to execute a particular bit of code.
+* Unlike blocks, we can call procs directly by using Ruby's .call method. Check it out!
+
+```
+test = Proc.new { # does something }
+test.call
+```
+
+###### Symbols, Meet Procs
+you can also convert symbols to procs using that handy little &.
+
+```
+strings = ["1", "2", "3"]
+nums = strings.map(&:to_i)
+# ==> [1, 2, 3]
+```
+
+#######Ruby lambda
+Like procs, lambdas are objects. The similarities don't stop there: with the exception of a bit of syntax and a few behavioral quirks, lambdas are identical to procs. Lambdas are defined using the following syntax:
+
+```
+lambda { |param| block }
+```
+
+This 
+
+```
+lambda { puts "Hello!" }
+```
+
+is the same as 
+
+```
+Proc.new { puts "Hello!" }
+```
+
+Example 
+```
+def lambda_demo(a_lambda)
+  puts "I'm the method!"
+  a_lambda.call
+end
+
+lambda_demo(lambda { puts "I'm the lambda!" })
+```
+
+###### Lambdas vs. Procs
+If you're thinking that procs and lambdas look super similar, that's because they are! There are only two main differences.
+* A lambda checks the number of arguments passed to it, while a proc does not. This means that a lambda will throw an error if you pass it the wrong number of arguments, whereas a proc will ignore unexpected arguments and assign nil to any that are missing.
+* When a lambda returns, it passes control back to the calling method; when a proc returns, it does so immediately, without going back to the calling method. The code below will illustrate this 
+
+```
+def batman_ironman_proc
+  victor = Proc.new { return "Batman will win!" }
+  victor.call
+  "Iron Man will win!"
+end
+
+puts batman_ironman_proc
+
+def batman_ironman_lambda
+  victor = lambda { return "Batman will win!" }
+  victor.call
+  "Iron Man will win!"
+end
+
+puts batman_ironman_lambda
+```
+######Implicit Return
+Ruby's methods will return the result of the last evaluated expression.
+This code and the one below it are the same
+
+```
+def add(a,b)
+  return a + b
+end
+```
+
+```
+def add(a,b)
+  a + b
+end
+```
+
+######referencing method names with symbols 
+You can use ```.respond_to?``` which takes a symbol and returns true if an object can receive that method and false otherwise.
+
+```
+[1, 2, 3].respond_to?(:push)
+```
+
+would return true, since you can call .push on an array object. However,
+
+```
+[1, 2, 3].respond_to?(:to_sym)
+```
+
+would return false, since you can't turn an array into a symbol.
 
 
