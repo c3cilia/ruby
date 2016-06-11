@@ -587,6 +587,59 @@ end
 
 puts batman_ironman_lambda
 ```
+
+* Challenge 1
+	* Create a lambda, ```symbol_filter```, that takes one parameter and checks to see if that parameter ```.is_a? Symbol```.
+	* Create a new variable called ```symbols```, and store the result of calling ```my_array.select``` and passing it your lambda.
+* Challenge 2
+	* Given an array with all sorts of objects, create a variable, ```ints```, and store the result of calling ```.select``` method on the array with a block that checks if each element ```.is_a? Integer```.
+
+	```
+	odds_n_ends = [:weezard, 42, "Trady Blix", 3, true, 19, 12.345]
+
+	ints = odds_n_ends.select {|n| n.is_a? Integer}
+	
+	```
+
+* Challenge 3
+	* Create a proc called ```under_100``` that checks if a number it's passed is less than 100. 
+	* Given an array with all sorts of numbers use the proc to filer all nummbers that are under 100 and store in a variable called ```youngsters```
+
+	```
+	ages = [23, 101, 7, 104, 11, 94, 100, 121, 101, 70, 44]
+
+	under_100 = Proc.new {|n| n < 100}
+	youngsters = ages.select(&under_100)
+	```
+
+* Challenge 4
+	* Given the hash below, create a lambda called ```first_half``` that checks if a value is less then "M" in the alphabet
+	* Create a varible called ```a_to_m``` that stores the result of filtering the hash with the lambda.
+
+```
+crew = {
+  captain: "Picard",
+  first_officer: "Riker",
+  lt_cdr: "Data",
+  lt: "Worf",
+  ensign: "Ro",
+  counselor: "Troi",
+  chief_engineer: "LaForge",
+  doctor: "Crusher"
+}
+
+first_half = lambda {|key, value| value < "M"}
+a_to_m = crew.select(&first_half)
+```
+
+
+######Review of blocks, procs and lambdas
+* A block is just a bit of code between ```do..end``` or ```{}```. It's not an object on its own, but it can be passed to methods like ```.each``` or ```.select```.
+* A proc is a saved block we can use over and over.
+* A lambda is just like a proc, only it cares about the number of arguments it gets and it returns to its calling method rather than returning immediately.
+
+
+
 ######Implicit Return
 Ruby's methods will return the result of the last evaluated expression.
 This code and the one below it are the same
@@ -619,3 +672,443 @@ would return true, since you can call .push on an array object. However,
 would return false, since you can't turn an array into a symbol.
 
 
+####Classes in Ruby 
+####### ```initialize```
+This function initializes the class
+
+example
+
+```
+class Person
+    def initialize(name)
+        @name = name
+    end 
+end 
+
+matz = Person.new("Yukihiro")
+```
+
+######Scope 
+There are three possible types of scopes in a class 
+* Instance variable - variable belongs to the instance of a class. They start with ```@```
+
+```
+class Person
+  def initialize(name, age, profession)
+    @name = name
+    @age = age
+    @profession = profession
+  end
+end
+```
+
+* Class variable - variable belong to the class. They start with ```@@```. You can use class variables to for example keep track of the number of instances of that class we've created
+
+```
+class Person
+  # Set your class variable to 0 on line 3
+  @@people_count = 0
+  
+  def initialize(name)
+    @name = name
+    # Increment your class variable on line 8
+    @@people_count += 1
+  end
+  
+  def self.number_of_instances
+    # Return your class variable on line 13
+    return @@people_count
+  end
+end
+
+matz = Person.new("Yukihiro")
+dhh = Person.new("David")
+
+puts "Number of Person instances: #{Person.number_of_instances}"
+```
+
+* Global variable - start with ```$```
+
+```
+class MyClass
+  $my_variable = "Hello!"
+end
+
+puts $my_variable
+```
+
+#######Inheritance 
+
+```
+class DerivedClass < BaseClass
+  # Some stuff!
+end
+```	
+
+######Overriding 
+
+```
+class Creature
+  def initialize(name)
+    @name = name
+  end
+  
+  def fight
+    return "Punch to the chops!"
+  end
+end
+
+# Add your code below!
+class Dragon < Creature
+    def fight()
+        return "Breathes fire!"
+    end 
+end 
+```
+
+######super Keyword
+
+Example 1
+
+```
+class Creature
+  def initialize(name)
+    @name = name
+  end
+  
+  def fight
+    return "Punch to the chops!"
+  end
+end
+
+# Add your code below!
+class Dragon < Creature
+    def fight()
+        puts "Instead of breathing fire.."
+        super 
+    end 
+end 
+```
+Example 2
+
+```
+class Message
+    @@messages_sent = 0
+    def initialize(from, to)
+        @from =from
+        @to = to
+        @@messages_sent += 1
+    end 
+end 
+
+class Email < Message
+    def initialize(from, to)
+        super(from, to)
+    end 
+end
+my_message = Message.new("cecilia", "mum")
+```
+
+Example 3
+
+```
+class Computer
+    @@users = {}
+    def initialize(username, passowrd)
+        @username = username
+        @passowrd = password
+        @files = {}
+        @@users[username] = password
+        
+    end 
+    
+    def create(filename) 
+        time = Time.now
+        @file[filename] = time
+        puts "Hi #{username}. File #{filename} has been created at #{time}"
+    end 
+end 
+```
+
+Note: Ruby does not allow a class to have more than one super class
+
+######Class methods 
+
+```
+class Machine
+  def Machine.hello
+    puts "Hello from the machine!"
+  end
+end
+```
+
+######Public and private methods 
+Methods are public by default in Ruby.
+
+```
+lass Dog
+    def initialize(name, breed)
+        @name = name
+        @breed = breed
+    end
+    
+    public 
+    def bark
+        puts "Woof!"
+    end 
+    
+    private 
+    def id
+        @id_number = 12345
+    end 
+end 
+```
+
+######attr_reader, attr_writer
+
+if we want to access a @name instance variable, we had to write something like
+
+```
+def name
+  @name
+end
+```
+
+Well, no longer! We can use attr_reader to access a variable and attr_writer to change it. If we write
+
+```
+class Person
+  attr_reader :name
+  attr_writer :name
+  def initialize(name)
+    @name = name
+  end
+end
+```
+
+Ruby does something like this for us automatically:
+
+```
+def name
+  @name
+end
+
+def name=(value)
+  @name = value
+end
+```
+
+That name= might look funny, but you're allowed to put an = sign in a method name. That's just a Ruby convention saying, "hey, this method sets a value!
+
+Example of refactored code. This code is similar to 
+
+```
+class Person
+  def initialize(name, job)
+    @name = name
+    @job = job
+  end
+  
+  def name
+    @name
+  end
+  
+  def job=(new_job)
+    @job = new_job
+  end
+end
+```
+
+This code
+
+```
+class Person
+  def initialize(name, job)
+    @name = name
+    @job = job
+  end
+  
+  attr_reader :name
+  attr_writer :job
+  
+end
+```
+
+######attr_accessor
+If we want to both read and write a particular variable, there's an even shorter shortcut than using attr_reader and attr_writer. We can use attr_accessor to make a variable readable and writeable in one fell swoop.
+
+```
+class Person
+  attr_reader :name
+  attr_accessor :job
+  
+  def initialize(name, job)
+    @name = name
+    @job = job
+  end
+end
+```
+
+
+
+
+#### What's a Module?
+You can think of a module as a toolbox that contains a set methods and constants. Modules are super easy to make! You just use the module keyword, like so:
+
+```
+module ModuleName
+  # Bits 'n pieces
+end
+```
+
+Like class names, module names are written in CapitalizedCamelCase, rather than lowercasewithunderscores.
+One of the main purposes of modules is to separate methods and constants into named spaces. This is called (conveniently enough) namespacing, and it's how Ruby doesn't confuse ```Math::PI``` and ```Circle::PI```. This is called (conveniently enough) namespacing, and it's how Ruby doesn't confuse Math::PI and Circle::PI.
+
+```
+puts Math::PI
+```
+
+Some modules, like Math, are already present in the interpreter. Others need to be explicitly brought in, however, and we can do this using require. 
+
+```
+require 'date'
+
+puts Date.today
+```
+
+A nice effect of this is that you no longer have to prepend your constants and methods with the module name. Since everything has been pulled in, you can simply write PI instead of Math::PI.
+
+```
+class Angle
+  include Math
+  attr_accessor :radians
+  
+  def initialize(radians)
+    @radians = radians
+  end
+  
+  def cosine
+    cos(@radians)
+  end
+end
+
+acute = Angle.new(1)
+acute.cosine
+```
+
+######Mixins 
+When a module is used to mix additional behavior and information into a class, it's called a mixin. Mixins allow us to customize a class without having to rewrite code!
+
+```
+module Action
+  def jump
+    @distance = rand(4) + 2
+    puts "I jumped forward #{@distance} feet!"
+  end
+end
+
+class Rabbit
+  include Action
+  attr_reader :name
+  def initialize(name)
+    @name = name
+  end
+end
+
+class Cricket
+  include Action
+  attr_reader :name
+  def initialize(name)
+    @name = name
+  end
+end
+
+peter = Rabbit.new("Peter")
+jiminy = Cricket.new("Jiminy")
+
+peter.jump
+jiminy.jump
+```
+
+######Mimicing multiple inheritance
+```
+# Create your module here!
+module MartialArts
+    def swordsman
+        puts "I'm a swordsman"
+    end
+end
+class Ninja
+  include MartialArts
+  def initialize(clan)
+    @clan = clan
+  end
+end
+
+class Samurai
+    include MartialArts
+  def initialize(shogun)
+    @shogun = shogun
+  end
+end
+```
+
+###### extends
+Whereas include mixes a module's methods in at the instance level (allowing instances of a particular class to use the methods), the extend keyword mixes a module's methods at the class level. This means that class itself can use the methods, as opposed to instances of the class
+
+```
+# ThePresent has a .now method that we'll extend to TheHereAnd
+
+module ThePresent
+  def now
+    puts "It's #{Time.new.hour > 12 ? Time.new.hour - 12 : Time.new.hour}:#{Time.new.min} #{Time.new.hour > 12 ? 'PM' : 'AM'} (GMT)."
+  end
+end
+
+class TheHereAnd
+  extend ThePresent
+end
+
+TheHereAnd.now
+```
+
+######Exampe Challenge
+
+```
+class Account
+  attr_reader :name, :balance
+  def initialize(name, balance=100)
+    @name = name
+    @balance = balance
+  end
+  
+  def display_balance(pin_number)
+    puts pin_number == pin ? "Balance: $#{@balance}." : pin_error
+  end
+  
+  def withdraw(pin_number, amount)
+    if pin_number == pin
+      @balance -= amount
+      puts "Withdrew #{amount}. New balance: $#{@balance}."
+    else
+      puts pin_error
+    end
+  end
+  
+  private
+  
+  def pin
+    @pin = 1234
+  end
+  
+  def pin_error
+    "Access denied: incorrect PIN."
+  end
+end
+
+my_account = Account.new("Eric", 1_000_000)
+my_account.withdraw(11, 500_000)
+my_account.display_balance(1234)
+my_account.withdraw(1234, 500_000)
+my_account.display_balance(1234)
+```
