@@ -2,6 +2,14 @@
 * [Installing RVM](http://ruby.about.com/od/rubyversionmanager/ss/installrvmlinux.htm) (This did not work)
 
 ####Strings 
+######Ways of expressing strings 
+
+"string" - normal double quotes
+'string' - normal single quotes 
+%Q{string} - Means string should have double quoutes 
+%q{string} - means string should have single quotes 
+
+
 ###### String interpolation
 
 ```
@@ -9,10 +17,13 @@
 ```
 
 ###### .capitalize
+
+```
 print "This is my question?"
 answer = gets.chomp
 answer2 = answer.capitalize 
 answer.capitalize!
+```
 
 ###### .include?
 
@@ -34,7 +45,46 @@ redact = gets.chomp
 words = text.split(" ") # space delimeter
 ```
 
+####Regular expressions 
+Use [rubular.com](http://rubular.com/) to test out regular expressions against strings
 
+
+####Integers 
+Integers are objects in ruby and you can call methods on them
+
+```
+3.day.ago # This works on rails and not plain ruby 
+50.methods # What methods does 50 respond to 
+50.respond_to?(:to_s) # Do you (50) respond to to a method called to_s?
+50.send(:+, 10) # The .send methods sends a method to an object. This case it is sending the addition method
+# The above is similar to
+
+50 + 10
+
+# This applies to other types as well
+# String 
+
+"cess".send(:length) ## same as 
+"cess".length
+
+# Arrays 
+my_array[4] $ ## same as 
+my_array.send(:[], 4)
+
+my_array[3] = "foo" ##same as 
+my_array.send(:[]=, 3, "foo")
+
+#Conditions 
+if (x == 3) ## same as 
+if (x.send(:==, 3))
+
+#Functions
+my_func(z) ## same as 
+self.send(:my_func, z)
+
+
+
+```
 
 ####Type casting
 ###### Integer()
@@ -138,6 +188,42 @@ puts favorite_book
 favorite_book = "Why's (Poignant) Guide to Ruby"
 puts favorite_book
 ```
+
+=~ This operator is used for matching strings with regular expressions
+
+example 
+
+```
+"fox@berkeley.EDU" =~ /(.*)@(.*)\.edu$/i
+``` 
+
+Works in vise versa as well. If the string and the regular expression don't match, the value is false. If they match the value is non-false and $1..$n capture parenthesized groups ($1 == "fox", $2=="berkeley")
+
+####Regular expressions
+You can contruct Regular expressions with 
+
+```
+Regexp.new('(.*)$', Regexp::IGNORECASE)
+```
+which is similar to 
+
+```
+/(.*)$/i #or
+
+%r{(.*)$}i
+```
+
+
+######Challenge
+Given the following Ruby:
+
+```
+rx = {:fox=>/^arm/, 'fox'=>[%r{AN(DO)$}, /an(do)/i]}
+```
+
+Which expression will evaluate to non-nil?
+
+```"armando" =~ rx{:fox}``` or ``` rx[:fox][1] =~ "ARMANDO"``` or ```rx['fox'][1] =~ "ARMANDO"``` or ```"armando" =~ rx['fox', 1]```
 
 #### Loops
 ######until loop
@@ -297,8 +383,8 @@ frequencies.reverse!
 You get a nil value if you try accessing an index that does not exist in an array
 Note: nil and false are the only non true values in ruby all other values are truthy. False and nill are not the same thing. False means "not true" and nil means "nothing at all". If you set a default value with hash constructor then you get that default value if you try accessing a non existent key in the hash
 
-######Hash symbols 
-A symbol is sort of a non string name of the key in a hash. The only difference of the using symbols as keys as opposed to strings is that the value for a symbol is unique as well i.e you can only have one copy of any given symbol
+######symbols 
+A symbols is like an immutable string whose value is itself. The only difference of the using symbols as keys as opposed to strings is that the value for a symbol is unique as well i.e you can only have one copy of any given symbol
 
 ```
 puts "string".object_id
@@ -440,7 +526,7 @@ by_three?(6)
 ######Blocks or anonymouse functions 
 Blocks can be defined with either the keywords do and end or with curly braces ({}).
 
-```
+```Operators
 1.times do
   puts "I'm a code block!"
 end
@@ -935,7 +1021,7 @@ end
 ```
 
 ######attr_accessor
-If we want to both read and write a particular variable, there's an even shorter shortcut than using attr_reader and attr_writer. We can use attr_accessor to make a variable readable and writeable in one fell swoop.
+If we want to both read and write a particular variable, there's an even shorter shortcut than using attr_reader and attr_writer. We can use attr_accessor to make a variable readable and writeable in one fell swoop. This is what is called mataprogramming i.e code that defines, writes and runs new code at runtime 
 
 ```
 class Person
@@ -1112,3 +1198,26 @@ my_account.display_balance(1234)
 my_account.withdraw(1234, 500_000)
 my_account.display_balance(1234)
 ```
+
+
+####Concepts 
+Reflections - we can as an onject questions at run time and we can have it modify itself at run time
+Metaprogramming - lets us define new code at runtime 
+Ruby has open classes
+
+
+
+###Questions 
+* What is the convention for naming classes, methods and variables in Ruby
+* What does it mean if a fuction ends with a question mark (?) or bang (!)
+* What is the convention for naming constants 
+* What is the convention for naming globals
+* What is a symbols and what is the syntax for a symbol
+* When will you want to use a string as opposed to a string 
+* What does it mean by a variable has no declarations 
+* What are optional arguments
+* Everything can be passed by reference except what? 
+* What is the difference between false and nil
+* Give 4 ways of expressing regular expression
+* what is #{} for when used inside a string
+* What is this =~ operator used for? 
