@@ -1201,9 +1201,12 @@ my_account.display_balance(1234)
 
 
 ####Concepts 
-Reflections - we can as an onject questions at run time and we can have it modify itself at run time
+Reflections - we can as an object questions at run time and we can have it modify itself at run time
 Metaprogramming - lets us define new code at runtime 
-Ruby has open classes
+Introspection - You can ask ruby objects questions at runtime. 
+
+Ruby has open classes --> this needs to be practiced a little bit more
+method_mising -- need to practice this a little bit more
 
 
 
@@ -1221,3 +1224,9 @@ Ruby has open classes
 * Give 4 ways of expressing regular expression
 * what is #{} for when used inside a string
 * What is this =~ operator used for? 
+
+
+##New Way of visualizing this
+Everything in ruby is an object. You should visualize yourself as an object. Think about the many things that make that object and the many things that the object can possibly do. 
+
+All objects are happy to tell you what methods are possible. Just call the the .method method on the object. 
