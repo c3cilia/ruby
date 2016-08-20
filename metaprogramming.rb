@@ -10,7 +10,7 @@ class Array
   end
 end
 
-puts [32.0, 2.0 , 2.0, 2.0, 2.0].foldl("/") # Feel free to experiment with this
+[32.0, 2.0 , 2.0, 2.0, 2.0].foldl("/") # Feel free to experiment with this
 
 ## Dynamic method calls
 # If you have a method don't know what methods are possible before hand 
@@ -33,9 +33,9 @@ class Nomad
     @glider.send(action)
   end
 end
-nomad = Nomad.new(Glider.new)
-nomad.do("lift")
-nomad.do("bank")
+#nomad = Nomad.new(Glider.new)
+#nomad.do("lift")
+#nomad.do("bank")
 
 ## Dynamic dispatch
 
@@ -79,11 +79,49 @@ class SuperHash
 
 end
 
-arr = SuperHash.new({"age": 20, "name": "Cecilia", "purpose": 3})
+## Method missing example 3
+class MethodCall
+  def initialize(sym, args)
+    @sym = sym
+    @args = args
+  end
+  
+  def sym
+    @sym
+  end
+  
+  def args
+    @args
+  end
+  
+  def ==(other_call)
+    @sym == other_call.sym && @args == other_call.args
+  end
+end
 
-puts arr.age
-puts arr.name
+class Spy
+  def initialize
+    @method_calls = []
+  end
+  
+  def method_missing(sym, *args) 
+    @method_calls << MethodCall.new(sym, args)
+  end
+
+  def method_called?(sym, *args)
+    @method_calls.include?(MethodCall.new(sym, args))
+  end
+end
+  
+spy = Spy.new()
+spy.test("name", "gender")
+
+print spy.method_called?(:test, "name", "gender")
+puts
+
 
 
 ##*********************************************************************************
 # 1) 
+
+

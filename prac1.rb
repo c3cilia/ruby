@@ -49,3 +49,5 @@ greetings.[](1)
 ## Splitting strings
 'Fear is the path to the dark side'.split
 
+## String pattern replacement 
+"I am the best".gsub(" ", "_")

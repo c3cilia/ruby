@@ -11,7 +11,6 @@
 
 
 ###### String interpolation
-
 ```
 "#{some_variable}"
 ```
@@ -1035,6 +1034,8 @@ class Person
 end
 ```
 
+######Class reopning 
+Classses in ruby can be reoped. [Here is an example of how I have used this](https://github.com/c3cilia/ruby-calisthenics/blob/master/lib/fun_with_strings.rb) I reopened the String class to include the palindrome function
 
 
 
@@ -1115,6 +1116,26 @@ jiminy = Cricket.new("Jiminy")
 peter.jump
 jiminy.jump
 ```
+
+######Enumerable mixin
+The Enumerable mixin provides collection classes with several traversal and searching methods, and with the ability to sort. The class must provide a method each, which yields successive members of the collection. 
+Enumerable#max, #min, or #sort is used, the objects in the collection must also implement a meaningful <=> operator, as these methods rely on an ordering between members of the collection.
+
+Example:
+Given a string, you are told to return a hash with all word indicating the number of occurences as specified by this test
+
+```
+expect('Doo bee doo bee doo'.count_words).to be == {'doo' => 3, 'bee' => 2}```
+
+```
+Solution: Use the group_by method from Enumerable mixin
+```
+split_string = 'Doo bee doo bee doo'.split
+Hash[split_string.group_by {|x| x.downcase}.map {|k,v| [k,v.count]}]
+```
+
+
+
 
 ######Mimicing multiple inheritance
 ```
