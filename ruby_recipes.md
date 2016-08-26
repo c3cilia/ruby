@@ -3,12 +3,12 @@
 
 ####Strings 
 ######Ways of expressing strings 
-
+[reference](https://simpleror.wordpress.com/2009/03/15/q-q-w-w-x-r-s/)
 "string" - normal double quotes
 'string' - normal single quotes 
 %Q{string} - Means string should have double quoutes 
 %q{string} - means string should have single quotes 
-
+%w(foo bar) is a shortcut for ["foo", "bar"]
 
 ###### String interpolation
 ```
@@ -830,6 +830,31 @@ class DerivedClass < BaseClass
 end
 ```	
 
+#######Instance Variables Inheritance
+http://rubylearning.com/satishtalim/ruby_inheritance.html
+
+```
+class Dog  
+  def initialize(breed)  
+    @breed = breed  
+  end  
+end  
+  
+class Lab < Dog  
+  def initialize(breed, name)  
+    super(breed)  
+    @name = name  
+  end  
+  
+  def to_s  
+    "(#@breed, #@name)"  
+  end  
+end  
+  
+puts Lab.new("Labrador", "Benzy").to_s  
+
+```
+
 ######Overriding 
 
 ```
@@ -1034,9 +1059,16 @@ class Person
 end
 ```
 
-######Class reopning 
-Classses in ruby can be reoped. [Here is an example of how I have used this](https://github.com/c3cilia/ruby-calisthenics/blob/master/lib/fun_with_strings.rb) I reopened the String class to include the palindrome function
+######Class reopening 
+Classses in ruby can be reoped to add more functionality to the class. [Here is an example of how I have used this](https://github.com/c3cilia/ruby-calisthenics/blob/master/lib/fun_with_strings.rb) I reopened the String class to include the palindrome function
 
+######Composition of objects
+Nicely covered [here](https://learnrubythehardway.org/book/ex44.html)
+
+######class_eval
+I don't fully understand how this works but I think it can take a string and a block and evaluates them differently.
+
+I have sort of used class_eval with a string argument in [this code snippet](https://github.com/c3cilia/ruby-calisthenics/commit/3515ba0631893d37491a762d23615cbb0222af42)
 
 
 #### What's a Module?
@@ -1251,3 +1283,53 @@ method_mising -- need to practice this a little bit more
 Everything in ruby is an object. You should visualize yourself as an object. Think about the many things that make that object and the many things that the object can possibly do. 
 
 All objects are happy to tell you what methods are possible. Just call the the .method method on the object. 
+
+###Exceptions and exception handling
+```
+class RockPaperScissors
+
+  # Exceptions this class can raise:
+  class NoSuchStrategyError < StandardError ; end
+
+  def self.winner(player1, player2)
+    choice = %w(R P S)
+    raise RockPaperScissors::NoSuchStrategyError.new("Strategy must be one of R,P,S") \
+      unless (choice.include? player2[1]) && (choice.include? player1[1])
+    player2_choice_index = choice.index(player2[1]) 
+    if player1[1] == choice[player2_choice_index]
+      return player1 
+    elsif player1[1] == choice[player2_choice_index - 1]
+      return player2
+    else 
+      return player1
+    end
+  end
+end
+
+# test
+describe RockPaperScissors do
+  before(:each) do
+    @rock = ['Armando','R'] ; @paper = ['Dave','P'] ; @scissors = ['Sam','S']
+  end
+  describe 'game' do
+    it 'rock breaks scissors [10 points]' do
+      expect(RockPaperScissors.winner(@rock, @scissors)).to be == @rock
+    end
+    it 'scissors cut paper [10 points]' do
+      expect(RockPaperScissors.winner(@paper, @scissors)).to be == @scissors
+    end
+    it 'paper covers rock [10 points]' do
+      expect(RockPaperScissors.winner(@rock, @paper)).to be == @paper
+    end
+    it 'first player wins if both use same strategy [10 points]' do
+      expect(RockPaperScissors.winner(@scissors, ['Dave','S'])).to be == @scissors
+    end
+  end
+  it "should raise NoSuchStrategyError if strategy isn't R, P, or S [10 points]" do
+    expect(lambda{RockPaperScissors.winner(@rock, ['Dave', 'w'])}).to raise_error(
+      RockPaperScissors::NoSuchStrategyError, "Strategy must be one of R,P,S")
+  end
+end  
+```
+
+
