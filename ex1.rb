@@ -57,3 +57,29 @@ first, second, third = ARGV
 puts "Your first variable is: #{first}"
 puts "Your second variable is: #{second}"
 puts "Your third variable is: #{third}"
+
+# STRING MANIPULATION
+##Does a string include some string subset
+"hello".include? "l" # true
+
+##Replacing chars in a string
+"hello".replace("-") # -
+
+##getting the length of a string
+"hello".length # 5
+
+##Replicating a string with *
+"hello".replace("-" * "hello".length) # -----
+
+##scanning a string returns an array with all the occurrences of the substring
+"hello".scan('e') # ['e']
+
+# ARRAY MANUPULATION
+##counting items in an array
+["a", 'b'].count #2
+
+
+# RANGE MANIPULATION
+## find_all #is found in enumerable module. returns all that match a given criteria
+(0..10).find_all {|i| i%2 == 0}
+
